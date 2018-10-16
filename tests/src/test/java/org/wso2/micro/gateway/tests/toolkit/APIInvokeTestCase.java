@@ -52,6 +52,9 @@ public class APIInvokeTestCase extends BaseTestCase {
         //Register API with label
         pub.addApi(label, api);
 
+        //for http2
+       // pub.addApi2(label, api);
+
         //Define application info
         ApplicationDTO application = new ApplicationDTO();
         application.setName("jwtApp");

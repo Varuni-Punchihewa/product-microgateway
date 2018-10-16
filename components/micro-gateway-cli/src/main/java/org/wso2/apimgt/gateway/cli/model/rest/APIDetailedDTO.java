@@ -36,7 +36,7 @@ public class APIDetailedDTO extends APIInfoDTO {
     private Boolean isDefaultVersion = null;
 
     public enum TypeEnum {
-        HTTP, WS,
+        HTTP, WS, HTTP2
     }
 
     ;
@@ -153,7 +153,7 @@ public class APIDetailedDTO extends APIInfoDTO {
 
 
     /**
-     * The transport to be set. Accepted values are HTTP, WS
+     * The transport to be set. Accepted values are HTTP, WS, HTTP2.class
      **/
     @Hash
     @JsonProperty("type")
