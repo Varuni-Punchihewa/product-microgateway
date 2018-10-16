@@ -244,7 +244,7 @@ public class SetupCmd implements GatewayLauncherCmd {
 
 
 
-        //configure trust store
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    //configure trust store
         String configuredTrustStore = config.getToken().getTrustStoreLocation();
         if (StringUtils.isEmpty(configuredTrustStore)) {
             if (StringUtils.isEmpty(trustStoreLocation)) {
