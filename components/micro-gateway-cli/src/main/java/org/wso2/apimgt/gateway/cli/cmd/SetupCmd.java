@@ -41,6 +41,7 @@ import org.wso2.apimgt.gateway.cli.model.config.Client;
 import org.wso2.apimgt.gateway.cli.model.config.Config;
 import org.wso2.apimgt.gateway.cli.model.config.ContainerConfig;
 import org.wso2.apimgt.gateway.cli.model.config.Token;
+import org.wso2.apimgt.gateway.cli.model.config.HTTP2;
 import org.wso2.apimgt.gateway.cli.model.config.TokenBuilder;
 import org.wso2.apimgt.gateway.cli.model.rest.ext.ExtendedAPI;
 import org.wso2.apimgt.gateway.cli.model.rest.policy.ApplicationThrottlePolicyDTO;
@@ -122,9 +123,15 @@ public class SetupCmd implements GatewayLauncherCmd {
     @Parameter(names = {"-v", "--version"}, hidden = true)
     private String version;
 
+    //http2 flag
+    @SuppressWarnings("unused")
+    @Parameter(names = { "-http2", "--http2_enable" }, hidden = true)
+    private boolean isHttp2_enable;
+
     @SuppressWarnings("unused")
     @Parameter(names = {"-f", "--force"}, hidden = true, arity = 0)
     private boolean isForcefully;
+
     @SuppressWarnings("unused")
     @Parameter(names = {"-k", "--insecure"}, hidden = true, arity = 0)
     private boolean isInsecure;
@@ -139,6 +146,10 @@ public class SetupCmd implements GatewayLauncherCmd {
     public void execute() {
         String clientID;
         String workspace = GatewayCmdUtils.getUserDir();
+
+        //printing
+        System.out.println(isHttp2_enable);
+
         boolean isOpenApi = StringUtils.isNotEmpty(openApi);
         String projectName = GatewayCmdUtils.getProjectName(mainArgs);
         if (projectName.contains(" ")){
@@ -218,6 +229,32 @@ public class SetupCmd implements GatewayLauncherCmd {
                 }
             }
 
+
+        //setup http2 connection
+
+
+        HTTP2 http2 = new HTTP2() ;
+        http2.setEnable(isHttp2_enable);
+        GatewayCmdUtils.setHttp2(http2);
+
+
+
+        //Setup urls
+        publisherEndpoint = config.getToken().getPublisherEndpoint();
+        adminEndpoint = config.getToken().getAdminEndpoint();
+        registrationEndpoint = config.getToken().getRegistrationEndpoint();
+        tokenEndpoint = config.getToken().getTokenEndpoint();
+        if (StringUtils.isEmpty(publisherEndpoint) || StringUtils.isEmpty(adminEndpoint) || StringUtils
+                .isEmpty(registrationEndpoint) || StringUtils.isEmpty(tokenEndpoint)) {
+            if (StringUtils.isEmpty(baseUrl)) {
+                isOverwriteRequired = true;
+                if ((baseUrl = promptForTextInput("Enter APIM base URL [" + RESTServiceConstants.DEFAULT_HOST + "]: "))
+                        .trim().isEmpty()) {
+                    baseUrl = RESTServiceConstants.DEFAULT_HOST;
+                }
+            }
+            populateHosts(baseUrl);
+        }
             //Setup urls
             publisherEndpoint = config.getToken().getPublisherEndpoint();
             adminEndpoint = config.getToken().getAdminEndpoint();
