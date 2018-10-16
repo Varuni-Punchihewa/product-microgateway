@@ -23,6 +23,9 @@ import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
 import org.wso2.apimgt.gateway.cli.exception.BallerinaServiceGenException;
 import org.wso2.apimgt.gateway.cli.model.config.ContainerConfig;
+import org.wso2.apimgt.gateway.cli.model.config.HTTP2;
+import org.wso2.apimgt.gateway.cli.model.rest.EndpointConfig;
+import org.wso2.apimgt.gateway.cli.model.rest.ext.ExtendedAPI;
 import org.wso2.apimgt.gateway.cli.utils.CodegenUtils;
 import org.wso2.apimgt.gateway.cli.utils.GatewayCmdUtils;
 import org.wso2.carbon.apimgt.rest.api.publisher.dto.APIDTO;
@@ -53,6 +56,7 @@ public class BallerinaService implements BallerinaSwaggerObject<BallerinaService
     private Set<Map.Entry<String, String>> security = null;
     private List<Tag> tags = null;
     private Set<Map.Entry<String, BallerinaPath>> paths = null;
+    private HTTP2 http2;
 
     /**
      * Build a {@link BallerinaService} object from a {@link Swagger} object.
@@ -69,6 +73,7 @@ public class BallerinaService implements BallerinaSwaggerObject<BallerinaService
         this.externalDocs = swagger.getExternalDocs();
         this.tags = swagger.getTags();
         this.containerConfig = GatewayCmdUtils.getContainerConfig();
+        this.http2 = GatewayCmdUtils.getHttp2();
         setPaths(swagger);
         return this;
     }
