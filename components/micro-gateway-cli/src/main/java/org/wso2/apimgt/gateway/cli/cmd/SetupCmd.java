@@ -41,6 +41,7 @@ import org.wso2.apimgt.gateway.cli.model.config.Client;
 import org.wso2.apimgt.gateway.cli.model.config.Config;
 import org.wso2.apimgt.gateway.cli.model.config.ContainerConfig;
 import org.wso2.apimgt.gateway.cli.model.config.Token;
+import org.wso2.apimgt.gateway.cli.model.config.HTTP2;
 import org.wso2.apimgt.gateway.cli.model.config.TokenBuilder;
 import org.wso2.apimgt.gateway.cli.oauth.OAuthService;
 import org.wso2.apimgt.gateway.cli.oauth.OAuthServiceImpl;
@@ -114,6 +115,11 @@ public class SetupCmd implements GatewayLauncherCmd {
     @Parameter(names = {"-v", "--version"}, hidden = true)
     private String version;
 
+    //http2 flag
+    @SuppressWarnings("unused")
+    @Parameter(names = { "-http2", "--http2_enable" }, hidden = true)
+    private boolean isHttp2_enable;
+
     @SuppressWarnings("unused")
     @Parameter(names = {"-f", "--force"}, hidden = true, arity = 0)
     private boolean isForcefully;
@@ -163,6 +169,9 @@ public class SetupCmd implements GatewayLauncherCmd {
         String clientID;
         String workspace = GatewayCmdUtils.getUserDir();
 
+        //printing
+        System.out.println(isHttp2_enable);
+
         String projectName = GatewayCmdUtils.getProjectName(mainArgs);
         validateAPIGetRequestParams(label, apiName, version);
 
@@ -205,6 +214,16 @@ public class SetupCmd implements GatewayLauncherCmd {
             }
         }
 
+
+        //setup http2 connection
+
+
+        HTTP2 http2 = new HTTP2() ;
+        http2.setEnable(isHttp2_enable);
+        GatewayCmdUtils.setHttp2(http2);
+
+
+
         //Setup urls
         publisherEndpoint = config.getToken().getPublisherEndpoint();
         adminEndpoint = config.getToken().getAdminEndpoint();
@@ -221,6 +240,9 @@ public class SetupCmd implements GatewayLauncherCmd {
             }
             populateHosts(baseUrl);
         }
+
+
+
 
         //configure trust store
         String configuredTrustStore = config.getToken().getTrustStoreLocation();
@@ -290,6 +312,7 @@ public class SetupCmd implements GatewayLauncherCmd {
                 clientSecret = null;
             }
         }
+
 
         if (StringUtils.isEmpty(clientID) || StringUtils.isEmpty(clientSecret)) {
             String[] clientInfo = manager
