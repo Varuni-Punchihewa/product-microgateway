@@ -17,7 +17,7 @@
  */
 package org.wso2.micro.gateway.tests.toolkit;
 
-import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.*;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -33,6 +33,8 @@ import org.wso2.micro.gateway.tests.util.TestConstant;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static io.netty.buffer.Unpooled.wrappedBuffer;
 
 public class APIInvokeTestCase extends BaseTestCase {
     private String prodToken, sandToken, jwtTokenProd, jwtTokenSand, expiringJwtTokenProd;
@@ -52,9 +54,6 @@ public class APIInvokeTestCase extends BaseTestCase {
         api.setProvider("admin");
         //Register API with label
         pub.addApi(label, api);
-
-        //for http2
-       // pub.addApi2(label, api);
 
         //Define application info
         ApplicationDTO application = new ApplicationDTO();
@@ -93,7 +92,7 @@ public class APIInvokeTestCase extends BaseTestCase {
     public void testApiInvoke() throws Exception {
         //test prod endpoint
         invoke(prodToken, MockHttpServer.PROD_ENDPOINT_RESPONSE, 200);
-
+        
         //test sand endpoint
         invoke(sandToken, MockHttpServer.SAND_ENDPOINT_RESPONSE, 200);
     }
