@@ -117,7 +117,7 @@ public class SetupCmd implements GatewayLauncherCmd {
 
     //http2 flag
     @SuppressWarnings("unused")
-    @Parameter(names = { "-http2", "--http2_enable" }, hidden = true)
+    @Parameter(names = { "-http2", "--http2_enable" }, hidden = true, arity = 0)
     private boolean isHttp2_enable;
 
     @SuppressWarnings("unused")
@@ -214,15 +214,21 @@ public class SetupCmd implements GatewayLauncherCmd {
             }
         }
 
-
-        //setup http2 connection
-
-
+        //Setup http2 connection
         HTTP2 http2 = new HTTP2() ;
         http2.setEnable(isHttp2_enable);
         GatewayCmdUtils.setHttp2(http2);
 
-
+        //creating the http2 hidden file
+        if(isHttp2_enable){
+            System.out.println("HTTP2 enable");
+            try{
+               GatewayCmdUtils.createHTTP2File(projectName);
+            } catch (Exception e) {
+                logger.error("Error occurred while creating the http2 temp file", e);
+                throw new CLIInternalException("Error occurred while creating the http2 temp file");
+            }
+        }
 
         //Setup urls
         publisherEndpoint = config.getToken().getPublisherEndpoint();

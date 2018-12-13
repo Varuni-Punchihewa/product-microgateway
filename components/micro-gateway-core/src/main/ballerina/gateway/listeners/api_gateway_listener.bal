@@ -74,18 +74,19 @@ public type EndpointConfiguration record {
     int port =9090,
     http:KeepAlive keepAlive = "AUTO",
     http:ServiceSecureSocket? secureSocket,
-    string httpVersion = "2.0",
+    string httpVersion = "1.1",
     http:RequestLimits? requestLimits,
     http:Filter[] filters,
     int timeoutMillis = DEFAULT_LISTENER_TIMEOUT,
     http:AuthProvider[]? authProviders,
     boolean isSecured,
 };
-
-
 function APIGatewayListener::init (EndpointConfiguration endpointConfig) {
     initiateGatewayConfigurations(endpointConfig);
     printDebug(KEY_GW_LISTNER, "Initialized gateway configurations for port:" + endpointConfig.port);
+
+    io:println("Initialized gateway configurations for port:" + endpointConfig.port);
+
     self.httpListener.init(endpointConfig);
     printDebug(KEY_GW_LISTNER, "Successfully initialized APIGatewayListener for port:" + endpointConfig.port);
 }
@@ -131,6 +132,14 @@ function initiateGatewayConfigurations(EndpointConfiguration config) {
     initGatewayCaches();
     printDebug(KEY_GW_LISTNER, "Initialized gateway caches");
     initializeAnalytics();
+
+    //Change the version of http2
+    if(getConfigBooleanValue(HTTP2_INSTANCE_ID, HTTP2_PROPERTY, false)) {
+        config.httpVersion = "2.0";
+        io:println("************************************");
+        io:println("httpVersion = " + config.httpVersion);
+        io:println("************************************");
+    }
 }
 
 public function getAuthProviders() returns http:AuthProvider[] {
