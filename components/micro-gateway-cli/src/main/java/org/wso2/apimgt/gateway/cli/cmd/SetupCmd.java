@@ -41,7 +41,6 @@ import org.wso2.apimgt.gateway.cli.model.config.Client;
 import org.wso2.apimgt.gateway.cli.model.config.Config;
 import org.wso2.apimgt.gateway.cli.model.config.ContainerConfig;
 import org.wso2.apimgt.gateway.cli.model.config.Token;
-import org.wso2.apimgt.gateway.cli.model.config.HTTP2;
 import org.wso2.apimgt.gateway.cli.model.config.TokenBuilder;
 import org.wso2.apimgt.gateway.cli.model.rest.ext.ExtendedAPI;
 import org.wso2.apimgt.gateway.cli.model.rest.policy.ApplicationThrottlePolicyDTO;
@@ -123,11 +122,6 @@ public class SetupCmd implements GatewayLauncherCmd {
     @Parameter(names = {"-v", "--version"}, hidden = true)
     private String version;
 
-    //http2 flag
-    @SuppressWarnings("unused")
-    @Parameter(names = { "-http2", "--http2_enable" }, hidden = true, arity = 0)
-    private boolean isHttp2_enable;
-
     @SuppressWarnings("unused")
     @Parameter(names = {"-f", "--force"}, hidden = true, arity = 0)
     private boolean isForcefully;
@@ -146,9 +140,6 @@ public class SetupCmd implements GatewayLauncherCmd {
     public void execute() {
         String clientID;
         String workspace = GatewayCmdUtils.getUserDir();
-
-        //printing
-        System.out.println(isHttp2_enable);
 
         boolean isOpenApi = StringUtils.isNotEmpty(openApi);
         String projectName = GatewayCmdUtils.getProjectName(mainArgs);
@@ -228,22 +219,6 @@ public class SetupCmd implements GatewayLauncherCmd {
                     }
                 }
             }
-
-        //Setup http2 connection
-        HTTP2 http2 = new HTTP2() ;
-        http2.setEnable(isHttp2_enable);
-        GatewayCmdUtils.setHttp2(http2);
-
-        //creating the http2 hidden file
-        if(isHttp2_enable){
-            System.out.println("HTTP2 enable");
-            try{
-               GatewayCmdUtils.createHTTP2File(projectName);
-            } catch (Exception e) {
-                logger.error("Error occurred while creating the http2 temp file", e);
-                throw new CLIInternalException("Error occurred while creating the http2 temp file");
-            }
-        }
 
         //Setup urls
         publisherEndpoint = config.getToken().getPublisherEndpoint();
@@ -428,6 +403,7 @@ public class SetupCmd implements GatewayLauncherCmd {
                 newConfig.setCorsConfiguration(GatewayCmdUtils.getDefaultCorsConfig());
                 GatewayCmdUtils.saveConfig(newConfig, toolkitConfigPath);
             }
+
 
             if (!changesDetected) {
                 outStream.println(
