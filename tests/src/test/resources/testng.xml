@@ -37,6 +37,9 @@
             <class name="org.wso2.micro.gateway.tests.toolkit.APIInvokeWithOAuthTestCase"/>
             <class name="org.wso2.micro.gateway.tests.toolkit.ThrottlingTestCase"/>
         </classes>
+        <!--<classes>-->
+            <!--<class name="org.wso2.micro.gateway.tests.services.HTTP2TestCase"/>-->
+        <!--</classes>-->
     </test>
 
 
